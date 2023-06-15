@@ -1,6 +1,7 @@
 <script>
     import {PUBLIC_BACKEND_BASE_URL} from '$env/static/public'
     import { goto } from '$app/navigation';
+    import { authenticateUser } from './../../../utils/auth.js';
 
     let formErrors = {}
 
@@ -28,11 +29,18 @@
         });
 
         if (resp.status == 200) {
-            goto ('/');
+        const res = await authenticateUser(userData.email, userData.password);
+        console.log(res)
+  
+        if (res.success) {
+          goto ('/');
         } else {
-            const res = await resp.json();
-            formErrors = res.data;
+          throw 'Sign up succeeded but authentication failed';
         }
+        } else {
+        const res = await resp.json();
+        formErrors = res.data;
+      }
     }
 </script>
 
