@@ -21,8 +21,8 @@ export const userStatus = logInStatus()
 
 export function logOut() {
   localStorage.setItem("auth", JSON.stringify(emptyAuth));
-  goto ('/')
   userStatus.loggedOut
+  goto ('/')
   return true
 }
 
@@ -91,7 +91,7 @@ export async function authenticateUser(email, password) {
       "token": res.accessToken,
       // "userId": res.id
     }));
-    userStatus.loggedIn
+    userStatus.loggedIn()
     return {
       success: true,
       res: res
