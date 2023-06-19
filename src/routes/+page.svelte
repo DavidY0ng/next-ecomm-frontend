@@ -4,10 +4,37 @@
 
 <script>
     import { uploadMedia } from '../utils/s3-uploader.js';
+    import {PUBLIC_BACKEND_BASE_URL} from '$env/static/public'
+    import { goto } from '$app/navigation';
+    import { getUserId } from '../utils/auth.js';
+    import { getTokenFromLocalStorage } from '../utils/auth.js';
   
     async function uploadImage(evt) {
       const [fileName, fileUrl] = await uploadMedia(evt.target['file'].files[0]);
-      // code to make POST request to your backend
+      evt.preventDefault()
+
+        // if (evt.target['password'].value != evt.target['confirmPassword'].value) {
+        // formErrors['password'] = { message: 'Password confirmation does not match' };
+        // return;
+        // }
+
+        const imageData = {
+            path : fileUrl,
+            name : fileName,
+            price : parseFloat(evt.target['price'].value),
+            title : evt.target['title'].value,
+            description : evt.target['description'].value,
+            sellerId : getUserId()
+        };
+
+        const resp = await fetch(PUBLIC_BACKEND_BASE_URL + '/image', {
+            method : 'POST',
+            mode : 'cors',
+            headers: {
+                'Content-Type' : 'application/json'
+            },
+            body: JSON.stringify(imageData)
+        });
     }
   </script>
 
@@ -25,7 +52,7 @@
         <label for ="price" class="label">
           <span class="label-text">Price</span>
         </label>
-          <input type="text" placeholder=" " class="input input-bordered w-full max-w-xs" />
+          <input type="text" name = "price" placeholder=" " class="input input-bordered w-full max-w-xs" />
         <label for ="currency" class="label">
           <span class="label-text-alt">USD</span>
         </label>
@@ -34,13 +61,13 @@
         <label for = "title" class="label">
           <span class="label-text">Title</span>
         </label>
-        <input type="text" placeholder=" " class="input input-bordered w-full max-w-xs" />
+        <input type="text" name = "title" placeholder=" " class="input input-bordered w-full max-w-xs" />
       </div>
       <div>
-        <label for = "description" class="label">
+        <label for="description" class="label">
           <span class="label-text">Description</span>
         </label>
-        <textarea class="textarea textarea-bordered h-24" placeholder="Bio"></textarea>
+        <textarea class="textarea textarea-bordered h-24" name="description" placeholder="Bio"></textarea>
       </div>
     </div>
     <button class="btn btn-block btn-secondary">Upload</button>
