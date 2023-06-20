@@ -31,10 +31,14 @@
             method : 'POST',
             mode : 'cors',
             headers: {
-                'Content-Type' : 'application/json'
+                'Content-Type' : 'application/json',
+                Authorization : getTokenFromLocalStorage(),
             },
             body: JSON.stringify(imageData)
+           
         });
+        // console.log('Authorization:', resp.headers.get('authorization'))
+        // console.log(getTokenFromLocalStorage())
     }
   </script>
 
