@@ -10,6 +10,7 @@
     import { getTokenFromLocalStorage } from '../utils/auth.js';
   
     async function uploadImage(evt) {
+      const token = getTokenFromLocalStorage()
       const [fileName, fileUrl] = await uploadMedia(evt.target['file'].files[0]);
       evt.preventDefault()
 
@@ -32,13 +33,11 @@
             mode : 'cors',
             headers: {
                 'Content-Type' : 'application/json',
-                Authorization : getTokenFromLocalStorage(),
+                Authorization : `Bearer ${token}`,
             },
             body: JSON.stringify(imageData)
            
         });
-        // console.log('Authorization:', resp.headers.get('authorization'))
-        // console.log(getTokenFromLocalStorage())
     }
   </script>
 
