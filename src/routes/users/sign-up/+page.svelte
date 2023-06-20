@@ -30,7 +30,6 @@
 
         if (resp.status == 200) {
         const res = await authenticateUser(userData.email, userData.password);
-        console.log(res)
   
         if (res.success) {
           goto ('/');

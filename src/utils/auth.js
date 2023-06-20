@@ -4,7 +4,7 @@ import { goto } from '$app/navigation';
 
 const emptyAuth = {
   "token": "",
-  // "userId": ""
+  "userId": ""
 }
 
 function logInStatus () {
@@ -30,6 +30,14 @@ export function getTokenFromLocalStorage() {
   const auth = localStorage.getItem("auth")
   if (auth) {
     return JSON.parse(auth)["token"]
+  }
+  return null
+}
+
+export function getUserId() {
+  const auth = localStorage.getItem("auth")
+  if (auth) {
+    return JSON.parse(auth)["userId"]
   }
   return null
 }
@@ -89,7 +97,7 @@ export async function authenticateUser(email, password) {
   if (resp.status == 200) {
     localStorage.setItem("auth", JSON.stringify({
       "token": res.accessToken,
-      // "userId": res.id
+      "userId": res.userId
     }));
     userStatus.loggedIn()
     return {
