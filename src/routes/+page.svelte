@@ -28,7 +28,7 @@
             sellerId : getUserId()
         };
 
-        const resp = await fetch(PUBLIC_BACKEND_BASE_URL + '/image', {
+        const resp = await fetch(PUBLIC_BACKEND_BASE_URL + '/images', {
             method : 'POST',
             mode : 'cors',
             headers: {
