@@ -8,6 +8,8 @@
     import { goto } from '$app/navigation';
     import { getUserId } from '../utils/auth.js';
     import { getTokenFromLocalStorage } from '../utils/auth.js';
+
+    export let data;
   
     async function uploadImage(evt) {
       const token = getTokenFromLocalStorage()
@@ -43,11 +45,25 @@
 
 <h1>Welcome to SvelteKit</h1>
 
-<button class="btn" onclick="my_modal_1.showModal()">open modal</button>
-<dialog id="my_modal_1" class="modal">
-<div class = "container">
-    
+<div class="overflow-y-auto grid grid-cols-3 gap-5 container mx-auto px-2">
+  {#each data.images as image}
+<div class = "grid grid-cols-4 gap-4 mx-auto px-4">
+  <div class="card glass w-96 bg-base-100 shadow-xl">
+    <figure><img src={image.path} alt="image" /></figure>
+    <div class="card-body">
+      <h2 class="card-title">{image.title}</h2>
+      <p>{image.description}</p>
+      <div class="card-actions justify-end">
+        <button class="btn btn-primary glass">Buy Now</button>
+      </div>
+    </div>
+  </div>
 </div>
+{/each}
+</div>
+
+<button class="btn" onclick="my_modal_1.showModal()">Upload Image</button>
+<dialog id="my_modal_1" class="modal">
   <form on:submit|preventDefault={uploadImage} method="dialog" class="modal-box">
     <input type="file" name="file" class="file-input file-input-bordered file-input-secondary w-full max-w-xs" />
     <div class="form-control w-full max-w-xs">
