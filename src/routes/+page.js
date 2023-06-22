@@ -13,8 +13,6 @@ export async function load({ fetch }) {
         images: []
       }
     }
-    
-    
   }
   
   
