@@ -1,5 +1,6 @@
 <svelte:head>
   <script src="/aws-sdk-s3.min.js"></script>
+  <script src="https://js.stripe.com/v3/"></script>
 </svelte:head>
 
 <script>
@@ -8,6 +9,8 @@
     import { goto } from '$app/navigation';
     import { getUserId } from '../utils/auth.js';
     import { getTokenFromLocalStorage } from '../utils/auth.js';
+
+    export let data;
   
     async function uploadImage(evt) {
       const token = getTokenFromLocalStorage()
@@ -28,7 +31,7 @@
             sellerId : getUserId()
         };
 
-        const resp = await fetch(PUBLIC_BACKEND_BASE_URL + '/image', {
+        const resp = await fetch(PUBLIC_BACKEND_BASE_URL + '/images', {
             method : 'POST',
             mode : 'cors',
             headers: {
@@ -36,26 +39,69 @@
                 Authorization : `Bearer ${token}`,
             },
             body: JSON.stringify(imageData)
-           
+
         });
+        if (resp.status == 200) {
+        return {
+        success: true,
+        }
+        }
+
+        return {
+        success: false,
+        }
     }
+
+    async function checkout() {
+    const resp = await fetch(PUBLIC_BACKEND_BASE_URL + '/checkout', {
+    method: 'POST',
+    mode: 'cors',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    // body: JSON.stringify({
+    //   items: [
+    //     { id: 'item1', quantity: 2 },
+    //     { id: 'item2', quantity: 1 }
+    //   ],
+    //   customer: {
+    //     name: 'John Doe',
+    //     email: 'john@example.com',
+    //     address: {
+    //       line1: '123 Main St',
+    //       city: 'Anytown',
+    //       state: 'CA',
+    //       postal_code: '12345',
+    //       country: 'US'
+    //     }
+    //   },
+    //   metadata: {
+    //     order_id: '12345',
+    //     additional_info: 'Some additional information about the order'
+    //   }
+    // })
+  });
+
+  // const data = await resp.json();
+  // console.log(data);
+}
   </script>
 
 <h1>Welcome to SvelteKit</h1>
 
-<button class="btn" onclick="my_modal_1.showModal()">open modal</button>
-<dialog id="my_modal_1" class="modal">
-<div class = "container">
-    
+<div class = "container mx-auto p-7">
+  <button class="btn btn-secondary" onclick="my_modal_1.showModal()">Upload Image</button>
 </div>
-  <form on:submit|preventDefault={uploadImage} method="dialog" class="modal-box">
-    <input type="file" name="file" class="file-input file-input-bordered file-input-secondary w-full max-w-xs" />
-    <div class="form-control w-full max-w-xs">
+
+<dialog id="my_modal_1" class="modal">
+  <form on:submit|preventDefault={uploadImage} method="dialog" class="modal-box container mx-auto">
+    <input type="file" name="file" class="file-input file-input-bordered file-input-secondary w-full" />
+    <div class="form-control w-full">
       <div>
         <label for ="price" class="label">
           <span class="label-text">Price</span>
         </label>
-          <input type="text" name = "price" placeholder=" " class="input input-bordered w-full max-w-xs" />
+          <input type="text" name = "price" placeholder=" " class="input input-bordered w-full" />
         <label for ="currency" class="label">
           <span class="label-text-alt">USD</span>
         </label>
@@ -64,13 +110,13 @@
         <label for = "title" class="label">
           <span class="label-text">Title</span>
         </label>
-        <input type="text" name = "title" placeholder=" " class="input input-bordered w-full max-w-xs" />
+        <input type="text" name = "title" placeholder=" " class="input input-bordered w-full" />
       </div>
       <div>
         <label for="description" class="label">
           <span class="label-text">Description</span>
         </label>
-        <textarea class="textarea textarea-bordered h-24" name="description" placeholder="Bio"></textarea>
+        <textarea class="textarea textarea-bordered h-24 w-full" name="description" placeholder=" "></textarea>
       </div>
     </div>
     <button class="btn btn-block btn-secondary">Upload</button>
@@ -80,3 +126,43 @@
     <button>close</button>
   </form>
 </dialog>
+
+
+<div class="overflow-y-auto grid grid-cols-3 gap-5 container mx-auto p-7">
+  {#each data.images as image}
+  <div class="card glass w-96 bg-base-100 shadow-xl hover:scale-105 transition ease-in-out delay-150">
+    <figure><img src={image.path} alt="image" /></figure>
+    <div class="card-body">
+      <h2 class="card-title">{image.title}</h2>
+      <p>{image.description}</p>
+      <div class="card-actions justify-end">
+        <p>USD {image.price}</p>
+        <form action="/checkout" method="POST">
+        <button class="btn btn-primary glass" type = "submit">Buy Now</button>
+        </form>
+      </div>
+    </div>
+  </div>
+{/each}
+</div>
+
+<!-- stripe test -->
+<head>
+  <title>Buy cool new product</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <section>
+    <div class="product">
+      <img src="https://i.imgur.com/EHyR2nP.png" alt="The cover of Stubborn Attachments" />
+      <div class="description">
+        <h3>Stubborn Attachments</h3>
+        <h5>$20.00</h5>
+      </div>
+    </div>
+    <!-- click the checkout button at the bottom of the page to test -->
+    <form action="/checkout">
+      <button on:click={checkout} type="submit" id="checkout-button">Checkout</button>
+    </form>
+  </section>
+</body>
