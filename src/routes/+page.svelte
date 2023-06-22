@@ -42,14 +42,17 @@
 
         });
         if (resp.status == 200) {
+        
         return {
         success: true,
         }
+        
         }
 
         return {
         success: false,
         }
+        
     }
 
     async function checkout() {
@@ -58,42 +61,23 @@
     mode: 'cors',
     headers: {
       'Content-Type': 'application/json',
-    },
-    // body: JSON.stringify({
-    //   items: [
-    //     { id: 'item1', quantity: 2 },
-    //     { id: 'item2', quantity: 1 }
-    //   ],
-    //   customer: {
-    //     name: 'John Doe',
-    //     email: 'john@example.com',
-    //     address: {
-    //       line1: '123 Main St',
-    //       city: 'Anytown',
-    //       state: 'CA',
-    //       postal_code: '12345',
-    //       country: 'US'
-    //     }
-    //   },
-    //   metadata: {
-    //     order_id: '12345',
-    //     additional_info: 'Some additional information about the order'
-    //   }
-    // })
-  });
+    }
 
-  // const data = await resp.json();
-  // console.log(data);
-}
+    });
+    const res = await resp.json()
+    console.log(res)
+    goto(res)
+
+  }
   </script>
 
 <h1>Welcome to SvelteKit</h1>
 
 <div class = "container mx-auto p-7">
-  <button class="btn btn-secondary" onclick="my_modal_1.showModal()">Upload Image</button>
+  <button class="btn btn-secondary" onclick="uploadImage.showModal()">Upload Image</button>
 </div>
 
-<dialog id="my_modal_1" class="modal">
+<dialog id="uploadImage" class="modal" >
   <form on:submit|preventDefault={uploadImage} method="dialog" class="modal-box container mx-auto">
     <input type="file" name="file" class="file-input file-input-bordered file-input-secondary w-full" />
     <div class="form-control w-full">
