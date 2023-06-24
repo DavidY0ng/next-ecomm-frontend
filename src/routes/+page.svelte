@@ -25,7 +25,7 @@
       const imageData = {
           path : fileUrl,
           name : fileName,
-          price : parseFloat(evt.target['price'].value),
+          price : parseInt((evt.target['price'].value)*100),
           title : evt.target['title'].value,
           description : evt.target['description'].value,
           sellerId : getUserId()
@@ -118,7 +118,7 @@
       <h2 class="card-title">{image.title}</h2>
       <p>{image.description}</p>
       <div class="card-actions justify-end">
-        <p>USD {image.price}</p>
+        <p>USD {((image.price)/100).toFixed(2)}</p>
         <form action=" ">
         <button class="btn btn-primary glass" type = "submit" on:click={checkout(image.id)}>Buy Now</button>
         </form>
