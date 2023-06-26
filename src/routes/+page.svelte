@@ -9,27 +9,28 @@
     import { goto } from '$app/navigation';
     import { getUserId } from '../utils/auth.js';
     import { getTokenFromLocalStorage } from '../utils/auth.js';
+    import { Jumper } from 'svelte-loading-spinners';
 
     export let data;
+    let successMsg = false;
     let loading = false;
 
     function sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
-
-
-  
+    
     async function uploadImage(evt) {
+      loading = true
       const token = getTokenFromLocalStorage()
       const [fileName, fileUrl] = await uploadMedia(evt.target['file'].files[0]);
       evt.preventDefault()
-
+      successMsg = true
+      
         // if (evt.target['password'].value != evt.target['confirmPassword'].value) {
         // formErrors['password'] = { message: 'Password confirmation does not match' };
         // return;
         // }
-      loading = true
-      
+
       const imageData = {
           path : fileUrl,
           name : fileName,
@@ -47,11 +48,12 @@
               Authorization : `Bearer ${token}`,
           },
           body: JSON.stringify(imageData)
-
       });
+
 
       if (resp.status == 200) {
         await sleep(2000); 
+        successMsg = false
         loading = false
       return {
       success: true,
@@ -111,14 +113,21 @@
         <textarea class="textarea textarea-bordered h-24 w-full" name="description" placeholder=" "></textarea>
       </div>
     </div>
-    <button class ="btn btn-block btn-secondary">
+    <button on:click = {loading}   class ="btn btn-block btn-secondary">
       {#if loading}
-      <span class="loading loading-spinner"></span>
+      <span class="loading loading-bars loading-lg"></span>
+      {/if}
+
+      {#if successMsg}
+      <div class="toast toast-center">
+        <div class="alert alert-success">
+          <span>Upload successfully.</span>
+        </div>
+      </div>
       {/if}
       Upload
     </button>
   </form>
-
   <form method="dialog" class="modal-backdrop">
     <button>close</button>
   </form>
