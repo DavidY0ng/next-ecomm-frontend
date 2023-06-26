@@ -21,7 +21,7 @@ export const userStatus = logInStatus()
 
 export function logOut() {
   localStorage.setItem("auth", JSON.stringify(emptyAuth));
-  userStatus.loggedOut
+  userStatus.loggedOut()
   goto ('/')
   return true
 }

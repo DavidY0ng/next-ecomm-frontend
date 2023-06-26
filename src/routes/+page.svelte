@@ -11,6 +11,13 @@
     import { getTokenFromLocalStorage } from '../utils/auth.js';
 
     export let data;
+    let loading = false;
+
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+
   
     async function uploadImage(evt) {
       const token = getTokenFromLocalStorage()
@@ -21,7 +28,8 @@
         // formErrors['password'] = { message: 'Password confirmation does not match' };
         // return;
         // }
-
+      loading = true
+      
       const imageData = {
           path : fileUrl,
           name : fileName,
@@ -41,8 +49,10 @@
           body: JSON.stringify(imageData)
 
       });
+
       if (resp.status == 200) {
-      
+        await sleep(2000); 
+        loading = false
       return {
       success: true,
       }
@@ -101,7 +111,12 @@
         <textarea class="textarea textarea-bordered h-24 w-full" name="description" placeholder=" "></textarea>
       </div>
     </div>
-    <button class="btn btn-block btn-secondary">Upload</button>
+    <button class ="btn btn-block btn-secondary">
+      {#if loading}
+      <span class="loading loading-spinner"></span>
+      {/if}
+      Upload
+    </button>
   </form>
 
   <form method="dialog" class="modal-backdrop">
@@ -127,24 +142,3 @@
   </div>
 {/each}
 </div>
-
-<!-- stripe test -->
-<head>
-  <title>Buy cool new product</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <section>
-    <div class="product">
-      <img src="https://i.imgur.com/EHyR2nP.png" alt="The cover of Stubborn Attachments" />
-      <div class="description">
-        <h3>Stubborn Attachments</h3>
-        <h5>$20.00</h5>
-      </div>
-    </div>
-    <!-- click the checkout button at the bottom of the page to test -->
-    <form action=" ">
-      <button on:click={checkout} type="submit" id="checkout-button">Checkout</button>
-    </form>
-  </section>
-</body>

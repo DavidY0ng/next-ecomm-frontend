@@ -20,9 +20,6 @@ function toggleDarkMode() {
           <a class = "btn btn-md bg-transparent font-bold" href="/">NEXT Ecomm</a>
           <div class="hidden w-full md:block md:w-auto" id="navbar-default">
             <ul class="flex flex-col p-4 md:p-0 mt-4 rounded-lg md:flex-row md:space-x-4 md:mt-0">
-              <li>
-                <a class = "btn btn-md bg-transparent font-bold" href="/postjobs">Post Jobs</a>
-              </li>
             {#if $userStatus}
               <li>
                 <button class = "btn btn-md bg-transparent font-bold" href = "/" on:click = {logOut}>Log Out</button>
