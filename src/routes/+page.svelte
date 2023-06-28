@@ -5,15 +5,20 @@
 
 <script>
     import { uploadMedia } from '../utils/s3-uploader.js';
-    import {PUBLIC_BACKEND_BASE_URL} from '$env/static/public'
+    import { PUBLIC_BACKEND_BASE_URL } from '$env/static/public'
     import { goto } from '$app/navigation';
     import { getUserId } from '../utils/auth.js';
     import { getTokenFromLocalStorage } from '../utils/auth.js';
-    import { Jumper } from 'svelte-loading-spinners';
 
     export let data;
     let successMsg = false;
     let loading = false;
+    let searchTerm = ""
+    let items = data.images
+
+    $: searchedImages = items.filter((image) => {
+      return image.title.toLowerCase().includes(searchTerm) || image.description.toLowerCase().includes(searchTerm)
+    })
 
     function sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
@@ -26,10 +31,6 @@
       evt.preventDefault()
       successMsg = true
       
-        // if (evt.target['password'].value != evt.target['confirmPassword'].value) {
-        // formErrors['password'] = { message: 'Password confirmation does not match' };
-        // return;
-        // }
 
       const imageData = {
           path : fileUrl,
@@ -81,12 +82,13 @@
     }
   </script>
 
-<h1>Welcome to SvelteKit</h1>
-
+<!-- Upload button -->
 <div class = "container mx-auto p-7">
   <button class="btn btn-secondary" onclick="uploadImage.showModal()">Upload Image</button>
+  <input type="text" placeholder="Search" class="input input-bordered input-secondary w-full max-w-xs" bind:value={searchTerm}/>
 </div>
 
+<!-- upload dialog box -->
 <dialog id="uploadImage" class="modal" >
   <form on:submit|preventDefault={uploadImage} method="dialog" class="modal-box container mx-auto">
     <input type="file" name="file" class="file-input file-input-bordered file-input-secondary w-full" />
@@ -133,11 +135,11 @@
   </form>
 </dialog>
 
-
+<!-- load the images -->
 <div class="overflow-y-auto grid grid-rows-1 lg:grid-cols-3 gap-5 container mx-auto p-7 ">
-  {#each data.images as image}
-  <div class="card glass w-96 bg-base-100 shadow-xl hover:scale-105 transition ease-in-out delay-150">
-    <figure><img src={image.path} alt="something suppose to be here" /></figure>
+  {#each searchedImages as image}
+  <div class="card h-100 glass w-96 bg-base-100 shadow-xl hover:scale-105 transition ease-in-out delay-150">
+    <figure class = "h-80"><img src={image.path} alt="something suppose to be here" /></figure>
     <div class="card-body">
       <h2 class="card-title">{image.title}</h2>
       <p>{image.description}</p>

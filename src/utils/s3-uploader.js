@@ -20,6 +20,7 @@ export async function uploadMedia(file, directory = "") {
       Bucket: PUBLIC_AWS_BUCKET,
       Key: fullKey,
       Body: file,
+      ContentType: file.type === 'image/jpeg' || file.type === 'image/png' ? file.type : 'application/octet-stream',
     }
   });
 

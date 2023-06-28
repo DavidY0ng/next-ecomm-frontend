@@ -1,6 +1,7 @@
 <script>
     import { authenticateUser } from '../../../utils/auth';
     import { goto } from '$app/navigation';
+    
     let formErrors = {}
     let alertMessage = ''
 

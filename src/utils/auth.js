@@ -49,7 +49,7 @@ export async function isLoggedIn() {
 
   try {
     const resp = await fetch(
-      PUBLIC_BACKEND_BASE_URL + '/api/collections/users/auth-refresh',
+      PUBLIC_BACKEND_BASE_URL + '/auth/refresh',
       {
         method: 'POST',
         mode: 'cors',
@@ -57,6 +57,9 @@ export async function isLoggedIn() {
           'Content-Type': 'application/json',
           'Authorization': getTokenFromLocalStorage()
         },
+        body: JSON.stringify({
+          token : getTokenFromLocalStorage()
+        })
       }
     );
 
@@ -64,8 +67,8 @@ export async function isLoggedIn() {
     if (resp.status == 200) {
 
       localStorage.setItem("auth", JSON.stringify({
-        "token": res.token,
-        "userId": res.record.id
+        "token": res.accessToken,
+        "userId": res.userId
       }));
 
       return true
